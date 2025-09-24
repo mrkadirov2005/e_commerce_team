@@ -28,6 +28,7 @@ function App() {
           <p className="product-price">${item.price}</p>
           <p className="product-rating">{item.rating.rate} ⭐ | {item.rating.count} available</p>
           <p className="product-category">{item.category}</p>
+          <button>available</button>
         </div>
       ))}
     </div>
