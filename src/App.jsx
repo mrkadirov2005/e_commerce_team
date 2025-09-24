@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux"; 
+import './App.css' 
+import { fetchProducts } from "../redux/Slices/ProductsSlice/thunks/getAllProductsThunk"; 
+import { getAllProductsFromStore } from "../redux/selectors";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch = useDispatch();
+  const products = useSelector(getAllProductsFromStore);
+  const status = useSelector((state) => state.products.status);
+  const error = useSelector((state) => state.products.error);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  if (status === "loading") return <p className="loading">Loading products...</p>;
+  if (status === "failed") return <p className="error">Error: {error}</p>;
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="products-grid flex items-center justify-between gap-5 flex-wrap">
+      {products.map(item => (
+        <div key={item.id} className="product-card w-36">
+          <div className="product-image-wrapper">
+            <img src={item.image} alt={item.title} className="product-image" />
+          </div>
+          <h3 className="product-title">{item.title}</h3>
+          <p className="product-price">${item.price}</p>
+          <p className="product-rating">{item.rating.rate} ⭐ | {item.rating.count} available</p>
+          <p className="product-category">{item.category}</p>
+        </div>
+      ))}
+    </div>
+  );
 }
 
-export default App
+export default App;
