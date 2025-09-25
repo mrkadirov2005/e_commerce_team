@@ -1,26 +1,50 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { fetchProducts } from './thunks/getAllProductsThunk'
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchProducts } from "./thunks/getAllProductsThunk";
+import { addSingleProduct } from "./thunks/addSingleProductSlice";
 
 const initialState = {
   value: 0,
   products: [],
-  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-}
+  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: null, // store error messages
+};
 
 export const productsSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState,
-  reducers: {
-   
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchProducts.fulfilled,(state,action)=>{
-        state.products=action.payload;
-    })
+    // fetchProducts
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.products = action.payload;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
+
+    // addSingleProduct
+    builder
+      .addCase(addSingleProduct.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(addSingleProduct.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.products.push(action.payload);
+      })
+      .addCase(addSingleProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
   },
-})
+});
 
-// Export actions for use in components
-// export const {  } = productsSlice.actions
-
-export default productsSlice.reducer
+// Export reducer
+export default productsSlice.reducer;
