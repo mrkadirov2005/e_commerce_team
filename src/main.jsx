@@ -8,4 +8,15 @@ createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <App />
   </Provider>,
+import { BrowserRouter } from 'react-router-dom'
+import { store } from '../redux/store.js'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>,
 )
