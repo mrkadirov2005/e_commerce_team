@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import './App.css' 
 import { fetchProducts } from "../redux/Slices/ProductsSlice/thunks/getAllProductsThunk"; 
 import { getAllProductsFromStore } from "../redux/selectors";
+import { fetchAllCarts } from "../redux/Slices/cartsSlice/thunks/fetchAllCarts";
+import { fetchAllUsers } from "../redux/Slices/userSlices/thunks/thunks";
 
 function App() {
   const dispatch = useDispatch();
@@ -12,6 +14,9 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchAllCarts());
+    dispatch(fetchAllUsers());
+
   }, [dispatch]);
 
   if (status === "loading") return <p className="loading">Loading products...</p>;
